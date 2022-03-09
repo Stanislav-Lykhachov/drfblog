@@ -12,7 +12,8 @@ class EntryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entry
-        exclude = ['sum_of_marks','current_rate','amount_of_marks']
+        exclude = ['sum_of_marks', 'current_rate', 'amount_of_marks']
+
 
 class RateUpdateSerializer(serializers.ModelSerializer):
 
