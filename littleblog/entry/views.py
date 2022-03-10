@@ -4,12 +4,26 @@ from .models import Entry
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissons import IsOwnerOrReadOnly
 from rest_framework.response import Response
+import json
+from django.contrib.auth import get_user_model
 
 
 class UserProfileCreateView(generics.CreateAPIView):
 
-    permission_classes = (IsAuthenticated,)
     serializer_class = UserProfileCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        """
+        Сделаем так, чтобы User и UserProfile создавались одним махом, но оно не сработало.... Получил в своём browsable API
+        Вот такое    ""detail": "JSON parse error - Expecting ',' delimiter: line 5 column 5 (char 76)""
+        """
+        #request_dict = json.load(request.data)
+        #credentials = {'username': request_dict.pop('username'), 'password': request_dict.pop('password')}
+        #usermodel = get_user_model()
+        #created_user = usermodel.objects.create_user(*credentials)
+        #request_dict['user'] = created_user.id
+        #json.dump(request_dict)
+        return self.create(request, *args, **kwargs)
 
 
 class EntryDetailView(generics.RetrieveUpdateDestroyAPIView):
