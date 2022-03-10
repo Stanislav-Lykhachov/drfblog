@@ -14,15 +14,13 @@ class UserProfileCreateView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """
-        Сделаем так, чтобы User и UserProfile создавались одним махом, но оно не сработало.... Получил в своём browsable API
-        Вот такое    ""detail": "JSON parse error - Expecting ',' delimiter: line 5 column 5 (char 76)""
+        Сделаем так, чтобы User и UserProfile создавались одним махом, но оно не сработало.... Не могу понять, как передать
+        сериализатору id моего created_user...request.data пробовал менять - не получается...
         """
-        #request_dict = json.load(request.data)
-        #credentials = {'username': request_dict.pop('username'), 'password': request_dict.pop('password')}
-        #usermodel = get_user_model()
-        #created_user = usermodel.objects.create_user(*credentials)
-        #request_dict['user'] = created_user.id
-        #json.dump(request_dict)
+
+
+        usermodel = get_user_model()
+        created_user = usermodel.objects.create_user(username=request.data['username'], password=request.data['password'])
         return self.create(request, *args, **kwargs)
 
 
