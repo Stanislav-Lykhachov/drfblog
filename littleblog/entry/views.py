@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import EntryCreateSerializer, UserProfileCreateSerializer, RateUpdateSerializer
+from .serializers import EntryCreateSerializer, UserProfileCreateSerializer, RateUpdateSerializer, EntryDetailSerializer
 from .models import Entry
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissons import IsOwnerOrReadOnly
@@ -35,10 +35,16 @@ class UserProfileCreateView(generics.CreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
+class EntryCreateView(generics.CreateAPIView):
+
+    serializer_class = EntryCreateSerializer
+    permission_classes = (IsAuthenticated,)
+
+
 class EntryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     permission_classes = (IsOwnerOrReadOnly,)
-    serializer_class = EntryCreateSerializer
+    serializer_class = EntryDetailSerializer
     queryset = Entry.objects.all()
 
 
@@ -46,7 +52,7 @@ class RateUpdateView(generics.UpdateAPIView):
 
     """
     Вот это есть та самая вьюшка, которая отвечает за подсчет рейтинга записи.
-    В url нужно дописать в виде параметров pk и mark (оценка, которую ставишь)
+    В url нужно дописать в виде параметров pk и mark (оценка, которую ставишь) и отправить PATCH request
     """
 
     permission_classes = (IsAuthenticated,)
