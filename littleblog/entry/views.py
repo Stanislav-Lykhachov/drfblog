@@ -4,23 +4,34 @@ from .models import Entry
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissons import IsOwnerOrReadOnly
 from rest_framework.response import Response
-import json
 from django.contrib.auth import get_user_model
+from rest_framework import status
 
 
 class UserProfileCreateView(generics.CreateAPIView):
 
     serializer_class = UserProfileCreateSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = request.data.dict()
+        data.pop('username')
+        data.pop('password')
+        data['user'] = kwargs.pop('user')
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def post(self, request, *args, **kwargs):
         """
-        Сделаем так, чтобы User и UserProfile создавались одним махом, но оно не сработало.... Не могу понять, как передать
-        сериализатору id моего created_user...request.data пробовал менять - не получается...
+        Сделаем так, чтобы User и UserProfile создавались одним махом. УРА! В этом коммите я сделал это! Для минимального
+        POST запроса нужны :  username и password (для создания модельки User), и nickname для модельки UserProfile.
         """
-
-
         usermodel = get_user_model()
-        created_user = usermodel.objects.create_user(username=request.data['username'], password=request.data['password'])
+        user = usermodel.objects.create_user(username=request.data['username'], password=request.data['password'])
+        kwargs['user'] = user.pk
+
         return self.create(request, *args, **kwargs)
 
 

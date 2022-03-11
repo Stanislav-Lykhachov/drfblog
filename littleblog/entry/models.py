@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=255)
     avatar = models.ImageField(upload_to='avatars',blank=True)
 
