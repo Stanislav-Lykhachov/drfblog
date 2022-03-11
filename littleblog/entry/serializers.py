@@ -17,7 +17,8 @@ class EntryCreateSerializer(serializers.ModelSerializer):
     class CurrentAuthor:
         """Взял я такой, значит класс serializers.CurrentUserDefault и переделал под возвращение
         инстанса UserProfile, связанного с залогиненным User, вроде ошибки не выбивает, но заносит в поле author_id
-        какую-то рандомную шляпу..."""
+        какую-то рандомную шляпу...
+        UPD: То я дурак, всё-таки работает правильно :D   можно идти спать"""
         requires_context = True
 
         def __call__(self, serializer_field):
