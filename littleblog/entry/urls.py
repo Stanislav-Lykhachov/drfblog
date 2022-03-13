@@ -1,6 +1,6 @@
+from django.conf.urls.static import static
 from django.urls import path, include
 from .views import UserProfileCreateView, EntryDetailView, RateUpdateView, EntryCreateView
-
 
 urlpatterns = [
     path('CreateUserProfile/', UserProfileCreateView.as_view()),
@@ -8,3 +8,4 @@ urlpatterns = [
     path('EntryCreate/', EntryCreateView.as_view()),
     path('set_mark/', RateUpdateView.as_view())
     ]
+
