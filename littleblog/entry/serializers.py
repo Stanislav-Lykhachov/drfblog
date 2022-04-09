@@ -15,10 +15,7 @@ class UserProfileCreateSerializer(serializers.ModelSerializer):
 class EntryCreateSerializer(serializers.ModelSerializer):
 
     class CurrentAuthor:
-        """Взял я такой, значит класс serializers.CurrentUserDefault и переделал под возвращение
-        инстанса UserProfile, связанного с залогиненным User, вроде ошибки не выбивает, но заносит в поле author_id
-        какую-то рандомную шляпу...
-        UPD: То я дурак, всё-таки работает правильно :D   можно идти спать"""
+
         requires_context = True
 
         def __call__(self, serializer_field):
@@ -31,14 +28,14 @@ class EntryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entry
-        exclude = ['sum_of_marks', 'current_rate', 'amount_of_marks']
+        fields = ('id', 'title', 'text', 'author', 'preview_image', 'topic',)
 
 
 class EntryDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entry
-        exclude = ['sum_of_marks', 'current_rate', 'amount_of_marks']
+        fields = ('id', 'title', 'text', 'author', 'preview_image', 'topic',)
 
 
 class RateUpdateSerializer(serializers.ModelSerializer):
