@@ -8,7 +8,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     nickname = models.CharField(max_length=255)
-    avatar = models.ImageField(upload_to='avatars', blank = True)
+    avatar = models.ImageField(upload_to='avatars', blank=True)
 
     def __str__(self):
         return self.nickname
