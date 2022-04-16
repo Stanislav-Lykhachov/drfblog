@@ -39,18 +39,12 @@ class UserProfileCreateView(generics.CreateAPIView):
 class EntryViewSet(viewsets.ModelViewSet):
 
     queryset = Entry.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == 'create':
             return EntryCreateSerializer
         return EntryDetailSerializer
-
-    def get_permissions(self):
-        if self.action in ('update', 'partial_update', 'destroy'):
-            permission_classes = [IsOwnerOrReadOnly]
-        else:
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
 
 
 class RateUpdateView(generics.UpdateAPIView):
