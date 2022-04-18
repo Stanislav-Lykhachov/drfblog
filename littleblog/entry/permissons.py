@@ -17,7 +17,4 @@ class IsAuthenticatedOrWriteOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         write_methods = ["POST", ]
 
-        return (
-            request.method in write_methods or
-            isinstance(request.user, AnonymousUser)
-        )
+        return request.method in write_methods or request.user.is_authenticated
