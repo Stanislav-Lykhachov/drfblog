@@ -9,8 +9,8 @@ from django.contrib.auth.password_validation import UserAttributeSimilarityValid
 class UserProfileCreateSerializer(serializers.ModelSerializer):
 
     UserProfile = serializers.ReadOnlyField(source='profile.nickname')
-    nickname = serializers.CharField(max_length=50, required=True, write_only=True)
-    avatar = serializers.ImageField(required=False, write_only=True)
+    nickname = serializers.CharField(source="profile.name")
+    avatar = serializers.ImageField(source="profile.avatar", required=False)
 
     class Meta:
         model = User
