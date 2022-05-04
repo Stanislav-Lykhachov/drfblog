@@ -1,34 +1,34 @@
 from rest_framework import serializers
-from .models import Entry, UserProfile
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
-from django.contrib.auth.password_validation import UserAttributeSimilarityValidator, MinimumLengthValidator, \
-    CommonPasswordValidator, NumericPasswordValidator
+from django.contrib.auth.password_validation import validate_password
+
+from .models import Entry, UserProfile
 
 
 class UserProfileCreateSerializer(serializers.ModelSerializer):
 
     profile = serializers.ReadOnlyField(source='profile.nickname')
-    nickname = serializers.CharField(source="profile.name")
+    nickname = serializers.CharField(source="profile.nickname")
     avatar = serializers.ImageField(source="profile.avatar", required=False)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'nickname', 'avatar', 'UserProfile')
+        fields = ('id', 'username', 'password', 'nickname', 'avatar', 'profile')
         extra_kwargs = {
-            'password': {'write_only': True, 'validators': [CommonPasswordValidator().validate,
-                                                            MinimumLengthValidator().validate,
-                                                            NumericPasswordValidator().validate,
-                                                            UserAttributeSimilarityValidator().validate]
-                         },
+            'password': {'write_only': True},
             'username': {'validators': [UniqueValidator(queryset=User.objects.all())]},
             'nickname': {'validators': [UniqueValidator(queryset=User.objects.all())]}
         }
 
+    def validate_password(self, value):
+        validate_password(value)
+        return value
+
     def create(self, validated_data):
         credentials = {'username': validated_data.pop('username'), 'password': validated_data.pop('password')}
         user = User.objects.create_user(**credentials)
-        UserProfile.objects.create(user=user, **validated_data}
+        UserProfile.objects.create(user=user, **validated_data['profile'])
         return user
 
 
