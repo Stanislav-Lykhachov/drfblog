@@ -1,15 +1,35 @@
 from rest_framework import serializers
-from .models import Entry, UserProfile
 from django.contrib.auth.models import User
+from rest_framework.validators import UniqueValidator
+from django.contrib.auth.password_validation import validate_password
+
+from .models import Entry, UserProfile
 
 
 class UserProfileCreateSerializer(serializers.ModelSerializer):
 
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    profile = serializers.ReadOnlyField(source='profile.nickname')
+    nickname = serializers.CharField(source="profile.nickname")
+    avatar = serializers.ImageField(source="profile.avatar", required=False)
 
     class Meta:
-        model = UserProfile
-        fields = '__all__'
+        model = User
+        fields = ('id', 'username', 'password', 'nickname', 'avatar', 'profile')
+        extra_kwargs = {
+            'password': {'write_only': True},
+            'username': {'validators': [UniqueValidator(queryset=User.objects.all())]},
+            'nickname': {'validators': [UniqueValidator(queryset=User.objects.all())]}
+        }
+
+    def validate(self, attrs):
+        validate_password(attrs["password"], user=User(username=attrs["username"]))
+        return attrs
+
+    def create(self, validated_data):
+        credentials = {'username': validated_data.pop('username'), 'password': validated_data.pop('password')}
+        user = User.objects.create_user(**credentials)
+        UserProfile.objects.create(user=user, **validated_data['profile'])
+        return user
 
 
 class EntryCreateSerializer(serializers.ModelSerializer):

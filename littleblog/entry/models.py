@@ -10,6 +10,8 @@ class UserProfile(models.Model):
     nickname = models.CharField(max_length=255)
     avatar = models.ImageField(upload_to='avatars', blank=True)
 
+    objects = models.Manager
+
     def __str__(self):
         return self.nickname
 
