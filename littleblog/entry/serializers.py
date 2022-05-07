@@ -21,9 +21,9 @@ class UserProfileCreateSerializer(serializers.ModelSerializer):
             'nickname': {'validators': [UniqueValidator(queryset=User.objects.all())]}
         }
 
-    def validate_password(self, value):
-        validate_password(value)
-        return value
+    def validate(self, attrs):
+        validate_password(attrs["password"], user=User(username=attrs["username"]))
+        return attrs
 
     def create(self, validated_data):
         credentials = {'username': validated_data.pop('username'), 'password': validated_data.pop('password')}
