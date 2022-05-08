@@ -58,13 +58,25 @@ class EntryDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'author', 'preview_image', 'topic',)
 
 
-class RateUpdateSerializer(serializers.ModelSerializer):
+class RatingUpdateSerializer(serializers.ModelSerializer):
+
+    mark = serializers.IntegerField(required=True, write_only=True)
+    current_rating = serializers.FloatField()
+    amount_of_marks = serializers.IntegerField()
+
+    def validate_mark(self, value):
+        if value < 1 or value > 5:
+            raise serializers.ValidationError('Mark value must be between 1 and 5.')
+        return value
 
     class Meta:
         model = Entry
-        fields = '__all__'
+        fields = ('id', 'mark', 'current_rating', 'amount_of_marks')
+        read_only_fields = ('current_rating', 'amount_of_marks')
 
-
+    def update(self, instance, validated_data):
+        instance.save()
+        return instance
 
 
 
