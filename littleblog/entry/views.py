@@ -23,15 +23,13 @@ class EntryViewSet(viewsets.ModelViewSet):
     queryset = Entry.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
-    @action(detail=True, methods=['patch'])
+    @action(detail=True, methods=['post'])
     def rate(self, request, pk=None):
-        instance = self.get_object()
-        serializer = RatingUpdateSerializer(instance, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            set_mark(serializer.instance, **serializer.validated_data)  # rating logic storing in services.py
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        entry = self.get_object()
+        serializer = RatingUpdateSerializer(entry, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        set_mark(serializer.instance, **serializer.validated_data)  # rating logic storing in services.py
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if self.action == 'create':
