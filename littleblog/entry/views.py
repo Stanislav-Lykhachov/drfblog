@@ -3,11 +3,10 @@ from rest_framework import viewsets
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from .serializers import EntryCreateSerializer, UserProfileCreateSerializer, RatingUpdateSerializer, EntryDetailSerializer
 from .models import Entry
-from rest_framework.permissions import IsAuthenticated
 from .permissons import IsOwnerOrReadOnly, IsAuthenticatedOrWriteOnly
 from .services import set_mark
 
