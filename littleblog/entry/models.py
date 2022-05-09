@@ -41,10 +41,10 @@ class Entry(models.Model):
     preview_image = models.ImageField(upload_to='uploads/%Y/%m/%d/', blank=True)
     topic = models.ManyToManyField(Topic, related_name='entries')
     sum_of_marks = models.IntegerField(default=0)
-    current_rate = models.FloatField(default=0)
+    current_rating = models.FloatField(default=0)
     amount_of_marks = models.IntegerField(default=0)
 
-    objects = models.Manager  # Не знаю почему, но мне пришлось это явно указать, спасибо stackoverflow
+    objects = models.Manager
 
     def __str__(self):
         return self.title

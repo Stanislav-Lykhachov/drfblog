@@ -58,14 +58,13 @@ class EntryDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'author', 'preview_image', 'topic',)
 
 
-class RateUpdateSerializer(serializers.ModelSerializer):
+class RatingUpdateSerializer(serializers.ModelSerializer):
+
+    mark = serializers.IntegerField(required=True, write_only=True, min_value=1, max_value=5)
+    current_rating = serializers.FloatField()
+    amount_of_marks = serializers.IntegerField()
 
     class Meta:
         model = Entry
-        fields = '__all__'
-
-
-
-
-
-
+        fields = ('id', 'mark', 'current_rating', 'amount_of_marks')
+        read_only_fields = ('current_rating', 'amount_of_marks')

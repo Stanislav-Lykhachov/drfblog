@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import UserProfileListCreateView, EntryViewSet, RateUpdateView
 from rest_framework.routers import DefaultRouter
+
+from .views import UserProfileListCreateView, EntryViewSet
 
 app_name = 'entry'
 
@@ -9,7 +10,6 @@ router.register('entries', EntryViewSet)
 
 urlpatterns = [
     path('profiles/', UserProfileListCreateView.as_view()),
-    path('rate_entry/', RateUpdateView.as_view())
 ]
 
 urlpatterns += router.urls
